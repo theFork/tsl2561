@@ -14,8 +14,9 @@ https://github.com/adafruit/Adafruit_TSL2561
 
 from __future__ import absolute_import
 import time
-from Adafruit_GPIO import I2C
-from tsl2561.constants import *  # pylint: disable=unused-wildcard-import
+import pigpio
+
+from constants import *
 
 __author__ = 'Georges Toth <georges@trypill.org>'
 __credits__ = ['K.Townsend (Adafruit Industries)', 'Yongwen Zhuang (zYeoman)', 'miko (mikostn)', 'Simon Gansen (theFork)']
@@ -23,6 +24,7 @@ __license__ = 'BSD'
 __version__ = 'v3.0'
 
 '''HISTORY
+v3.1 - Use pigpio instead of Adafruit GPIO library
 v3.0 - Port to Python 3.x
 v2.2 - Merge PR #4 regarding wrong use of integration time
 v2.1 - Minor adaptations required by latest Adafruit pyton libraries
@@ -46,7 +48,8 @@ class TSL2561(object):
         if busnum == None:
             self.busnum = 1
 
-        self.i2c = I2C.get_i2c_device(self.address, busnum=busnum)
+        # Get pigpio pi instance
+        self.pi = pigpio.pi()
 
         self.debug = debug
         self.integration_time = integration_time
@@ -66,7 +69,7 @@ class TSL2561(object):
         doing anything else)
         '''
         # Make sure we're actually connected
-        x = self.i2c.readU8(TSL2561_REGISTER_ID)
+        x = self._readU8(TSL2561_REGISTER_ID)
 
         if not x & 0x0A:
             raise Exception('TSL2561 not found!')
@@ -81,12 +84,12 @@ class TSL2561(object):
 
     def enable(self):
         '''Enable the device by setting the control bit to 0x03'''
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
+        self._write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
                         TSL2561_CONTROL_POWERON)
 
     def disable(self):
         '''Disables the device (putting it in lower power sleep mode)'''
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
+        self._write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
                         TSL2561_CONTROL_POWEROFF)
 
     @staticmethod
@@ -107,11 +110,11 @@ class TSL2561(object):
         TSL2561.delay(self.delay_time)
 
         # Reads a two byte value from channel 0 (visible + infrared)
-        broadband = self.i2c.readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
+        broadband = self._readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
                                      TSL2561_REGISTER_CHAN0_LOW)
 
         # Reads a two byte value from channel 1 (infrared)
-        ir = self.i2c.readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
+        ir = self._readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
                               TSL2561_REGISTER_CHAN1_LOW)
 
         # Turn the device off to save power
@@ -128,7 +131,7 @@ class TSL2561(object):
         self.integration_time = integration_time
 
         # Update the timing register
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
+        self._write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
                         self.integration_time | self.gain)
 
         # Turn the device off to save power
@@ -144,7 +147,7 @@ class TSL2561(object):
         self.gain = gain
 
         # Update the timing register
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
+        self._write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
                         self.integration_time | self.gain)
 
         # Turn the device off to save power
@@ -306,6 +309,26 @@ class TSL2561(object):
         '''Read sensor data, convert it to LUX and return it'''
         broadband, ir = self._get_luminosity()
         return self._calculate_lux(broadband, ir)
+
+
+    def _readU8(self, register):
+        handle = self.pi.i2c_open(self.busnum, self.address)
+        data = self.pi.i2c_read_byte_data(handle, register)
+        self.pi.i2c_close(handle)
+        return data
+
+
+    def _readU16(self, register):
+        handle = self.pi.i2c_open(self.busnum, self.address)
+        data = self.pi.i2c_read_word_data(handle, register)
+        self.pi.i2c_close(handle)
+        return data
+
+
+    def _write8(self, register, data):
+        handle = self.pi.i2c_open(self.busnum, self.address)
+        self.pi.i2c_write_byte_data(handle, register, data)
+        self.pi.i2c_close(handle)
 
 
 if __name__ == "__main__":

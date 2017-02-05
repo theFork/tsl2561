@@ -7,9 +7,7 @@ Python library for TSL2561
 
 Requirements
 ------------
-  - python 3.x
-  - Adafruit GPIO library (https://github.com/adafruit/Adafruit_Python_GPIO)
-  - Adafruit PureIO library (https://github.com/adafruit/Adafruit_Python_PureIO)
+  - Python 3.x
 
 Example
 ------------
