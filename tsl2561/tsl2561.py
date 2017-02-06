@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 '''Driver for the TSL2561 digital luminosity (light) sensors.
 
 Pick one up at http://www.adafruit.com/products/439
