@@ -7,7 +7,7 @@ Python library for TSL2561
 
 Requirements
 ------------
-  - Python 3.x
+  - Python 2.7 or Python 3.x
 
 Example
 ------------
