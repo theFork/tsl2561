@@ -1,4 +1,4 @@
-Python library for TSL2561
+Python library for TSL256x
 ============
   This is python library for the TSL256x luminosity sensors.
 
@@ -10,11 +10,11 @@ Requirements
 Example
 ------------
   ```python
-  from tsl2561 import TSL2561
+  from tsl256x import TSL256x
 
 
   if __name__ == "__main__":
-    tsl = TSL2561(debug=1)
+    tsl = TSL256x(debug=1)
     print(tsl.lux())
   ```
 

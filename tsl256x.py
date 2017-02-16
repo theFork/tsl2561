@@ -24,7 +24,7 @@ __license__ = 'BSD'
 __version__ = 'v3.0'
 
 '''HISTORY
-v3.1 - Use pigpio instead of Adafruit GPIO library
+v3.1 - Forked: Use pigpio instead of Adafruit GPIO library
 v3.0 - Port to Python 3.x
 v2.2 - Merge PR #4 regarding wrong use of integration time
 v2.1 - Minor adaptations required by latest Adafruit pyton libraries
@@ -34,8 +34,8 @@ v1.0 - First release (previously TSL2561)
 '''
 
 
-class TSL2561(object):
-    '''Driver for the TSL2561 digital luminosity (light) sensors.'''
+class TSL256x(object):
+    '''Driver for the TSL256x digital luminosity (light) sensors.'''
     def __init__(self, address=None, busnum=None,
                  integration_time=TSL2561_INTEGRATIONTIME_402MS,
                  gain=TSL2561_GAIN_1X, autogain=False, debug=False):
@@ -107,7 +107,7 @@ class TSL2561(object):
         self.enable()
 
         # Wait x ms for ADC to complete
-        TSL2561.delay(self.delay_time)
+        TSL256x.delay(self.delay_time)
 
         # Reads a two byte value from channel 0 (visible + infrared)
         broadband = self._readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
@@ -332,6 +332,6 @@ class TSL2561(object):
 
 
 if __name__ == "__main__":
-    tsl = TSL2561(debug=True)
+    tsl = TSL256x(debug=True)
 
     print(tsl.lux())
