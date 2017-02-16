@@ -1,13 +1,11 @@
-[![Code Health](https://landscape.io/github/sim0nx/tsl2561/master/landscape.svg?style=flat)](https://landscape.io/github/sim0nx/tsl2561/master) [![PyPI version](https://badge.fury.io/py/tsl2561.svg)](https://badge.fury.io/py/tsl2561)
-
-
 Python library for TSL2561
 ============
-  This is python library for working with Adafruit's TSL2561 luminosity sensor.
+  This is python library for the TSL256x luminosity sensors.
 
 Requirements
 ------------
   - Python 2.7 or Python 3.x
+  - pigpio
 
 Example
 ------------
@@ -26,6 +24,9 @@ Copyright (c) 2015 Kevin Townsend for Adafruit Industries.
 All rights reserved.
 
 Copyright (c) 2016, Georges Toth
+All rights reserved.
+
+Copyright (c) 2017, Simon Gansen
 All rights reserved.
 
 
