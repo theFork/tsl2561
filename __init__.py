@@ -1,1 +1,1 @@
-from tsl256x import *
+from .tsl256x import *

@@ -12,11 +12,10 @@ commit ced9f731da5095988cd66158562c2fde659e0510:
 https://github.com/adafruit/Adafruit_TSL2561
 '''
 
-from __future__ import absolute_import
 import time
 import pigpio
 
-from constants import *
+from .constants import *
 
 __author__ = 'Georges Toth <georges@trypill.org>'
 __credits__ = ['K.Townsend (Adafruit Industries)', 'Yongwen Zhuang (zYeoman)', 'miko (mikostn)', 'Simon Gansen (theFork)']
